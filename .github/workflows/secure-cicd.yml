@@ -122,8 +122,6 @@ jobs:
           mkdir artifact
           cd artifact
           echo '{}' > sbom-result.json
-          sudo apt-get update
-          sudo apt-get install jq
           curl -X GET "${{ secrets.TRACKER_URL }}" -H "accept: */*" -H "Content-Type: application/json" -H "X-Api-Key: ${{ secrets.TRACKER_TOKEN }}" | jq '.' > sbom-result.json
 
       - name: Upload results
