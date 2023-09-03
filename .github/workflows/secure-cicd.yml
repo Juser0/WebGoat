@@ -119,6 +119,14 @@ jobs:
     steps:
       - name: Get SBOM report
         run: |
+          mkdir artifact
+          cd artifact
           echo '{}' > sbom-result.json
           curl -o sbom-result.json -X GET "${{ secrets.TRACKER_URL }}" -H "accept: */*" -H "Content-Type: application/json" -H "X-Api-Key: ${{ secrets.TRACKER_TOKEN }}" | jq '.'
+
+      - name: Upload results
+        uses: actions/upload-artifact@v2
+        with:
+          name: sbom-result
+          path: /home/runner/artifact
 
