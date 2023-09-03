@@ -124,7 +124,7 @@ jobs:
           echo '{}' > sbom-result.json
           sudo apt-get update
           sudo apt-get install jq
-          curl -o sbom-result.json -X GET "${{ secrets.TRACKER_URL }}" -H "accept: */*" -H "Content-Type: application/json" -H "X-Api-Key: ${{ secrets.TRACKER_TOKEN }}" | jq '.'
+          curl -X GET "${{ secrets.TRACKER_URL }}" -H "accept: */*" -H "Content-Type: application/json" -H "X-Api-Key: ${{ secrets.TRACKER_TOKEN }}" | jq '.' > sbom-result.json
 
       - name: Upload results
         uses: actions/upload-artifact@v2
