@@ -84,10 +84,6 @@ jobs:
           -Dsonar.projectKey=webgoat-sast -Dsonar.projectName='webgoat sast'
           
   Anchore-Build-Scan:
-    needs:
-      - codeql
-      - sonar
-      
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -113,6 +109,14 @@ jobs:
           format: cyclonedx-json
           artifact-name: sbom-cyclonedx.json
           dependency-snapshot: true
+
+      - name: Create Docker Container
+        run : docker run -d -p 8080:8080 localbuild/testimage:latest
+
+      - name: ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.7.0
+        with:
+          target: "localhost:8080"
 
   SBOM-Scan:
     runs-on: ubuntu-latest
