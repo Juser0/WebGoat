@@ -119,6 +119,7 @@ jobs:
         with:
           token: ${{ secrets.PERSONAL_TOKEN }}
           target: "http://localhost:8080"
+          allow_issue_writing: false 
 
   SBOM-Scan:
     runs-on: ubuntu-latest
