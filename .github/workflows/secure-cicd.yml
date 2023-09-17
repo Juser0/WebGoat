@@ -48,13 +48,12 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           upload: true
-          upload-path: artifact
       
       - name: Upload results
         uses: actions/upload-artifact@v2
         with:
           name: codeql-results
-          path: artifact/codeql.sarif
+          path: /home/runner/work/WebGoat/results/
           
   sonar:
     runs-on: ubuntu-latest
