@@ -45,17 +45,12 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           category: /language:${{matrix.language}}
-
-      - name: Convert CodeQL results to JSON
-        run: |
-          codeql bqrs decode --format=sarif -o codeql-results.sarif
-          sarif-to-json codeql-results.sarif -o codeql-results.json
-    
-      - name: Upload CodeQL results
+      
+      - name: Upload CodeQL SARIF results
         uses: actions/upload-artifact@v2
         with:
           name: codeql-results
-          path: codeql-results.json 
+          path: ${{ github.workspace }}/codeql/databases/qlpack/codeql.sarif
           
   sonar:
     runs-on: ubuntu-latest
@@ -93,6 +88,22 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.projectKey=webgoat-sast -Dsonar.projectName='webgoat sast'
+
+      - name: Get SonarQube Analysis Report
+        run: |
+          mkdir artifact
+          cd artifact
+          echo '{}' > sonar-result.json
+          curl -u $SONAR_TOKEN: "$SONAR_HOST_URL/api/issues/search?projectKeys=webgoat-sast" | jq '.' > sonar_result.json
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_USER_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Upload results
+        uses: actions/upload-artifact@v2
+        with:
+          name: sonar-result
+          path: artifact/sonar-result.json
           
   Anchore-Build-Scan:
     runs-on: ubuntu-latest
@@ -141,6 +152,7 @@ jobs:
           cd artifact
           echo '{}' > sbom-result.json
           curl -X GET "${{ secrets.TRACKER_URL }}" -H "accept: */*" -H "Content-Type: application/json" -H "X-Api-Key: ${{ secrets.TRACKER_TOKEN }}" | jq '.' > sbom-result.json
+      
       - name: Upload results
         uses: actions/upload-artifact@v2
         with:
