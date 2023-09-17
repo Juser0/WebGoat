@@ -94,10 +94,7 @@ jobs:
           mkdir artifact
           cd artifact
           echo '{}' > sonar-result.json
-          curl -u $SONAR_TOKEN: "$SONAR_HOST_URL/api/issues/search?projectKeys=webgoat-sast" | jq '.' > sonar_result.json
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_USER_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          curl -u ${{ secrets.SONAR_USER_TOKEN }}: "${{ secrets.SONAR_HOST_URL }}/api/issues/search?projectKeys=webgoat-sast" | jq '.' > sonar_result.json
 
       - name: Upload results
         uses: actions/upload-artifact@v2
