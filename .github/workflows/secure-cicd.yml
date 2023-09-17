@@ -45,6 +45,17 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           category: /language:${{matrix.language}}
+
+      - name: Convert CodeQL results to JSON
+        run: |
+          codeql bqrs decode --format=sarif -o codeql-results.sarif
+          sarif-to-json codeql-results.sarif -o codeql-results.json
+    
+      - name: Upload CodeQL results
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeql-results
+          path: codeql-results.json 
           
   sonar:
     runs-on: ubuntu-latest
