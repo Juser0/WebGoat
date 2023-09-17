@@ -40,17 +40,21 @@ jobs:
           
       - name: Autobuild
         uses: github/codeql-action/autobuild@v2
+
+      - name: set directory
+        run: mkdir artifact
         
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-          category: /language:${{matrix.language}}
+          upload: true
+          upload-path: artifact
       
-      - name: Upload CodeQL SARIF results
+      - name: Upload results
         uses: actions/upload-artifact@v2
         with:
           name: codeql-results
-          path: ${{ github.workspace }}/codeql/databases/qlpack/codeql.sarif
+          path: artifact/codeql.sarif
           
   sonar:
     runs-on: ubuntu-latest
@@ -94,7 +98,7 @@ jobs:
           mkdir artifact
           cd artifact
           echo '{}' > sonar-result.json
-          curl -u ${{ secrets.SONAR_USER_TOKEN }}: "${{ secrets.SONAR_HOST_URL }}/api/issues/search?projectKeys=webgoat-sast" | jq '.' > sonar_result.json
+          curl -u ${{ secrets.SONAR_USER_TOKEN }}: "${{ secrets.SONAR_HOST_URL }}/api/issues/search?projectKeys=webgoat-sast" | jq '.' > sonar-result.json
 
       - name: Upload results
         uses: actions/upload-artifact@v2
