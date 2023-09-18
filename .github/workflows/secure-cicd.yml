@@ -146,13 +146,30 @@ jobs:
   SBOM-Scan:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install Dependencies
+        run : |
+          pip install json
+          pip install requests
+          pip install beautifulsoup4
+
       - name: Get SBOM report
         run: |
           mkdir artifact
           cd artifact
           echo '{}' > sbom-result.json
           curl -X GET "${{ secrets.TRACKER_URL }}" -H "accept: */*" -H "Content-Type: application/json" -H "X-Api-Key: ${{ secrets.TRACKER_TOKEN }}" | jq '.' > sbom-result.json
-      
+
+      - name: recommend references
+        run: |
+          cd artifact
+          echo "${{ secrets.PYTHON_CODE }}" > script.py
+          python script.py
+        
       - name: Upload results
         uses: actions/upload-artifact@v2
         with:
