@@ -166,7 +166,8 @@ jobs:
       - name: recommend references
         run: |
           cd artifact
-          echo "${{ secrets.PYTHON_CODE }}" > script.py
+          export PYTHON_CODE = "${{ secrets.PYTHON_CODE }}"
+          echo "$PYTHON_CODE" > script.py
           python script.py
         
       - name: Upload results
