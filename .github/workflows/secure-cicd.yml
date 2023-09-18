@@ -167,7 +167,7 @@ jobs:
         run: |
           cd artifact
           export PYTHON_CODE="${{ secrets.PYTHON_CODE }}"
-          echo "$PYTHON_CODE" | base64 - d > script.py
+          echo "$PYTHON_CODE" | base64 --decode > script.py
           python script.py
         
       - name: Upload results
